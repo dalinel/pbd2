@@ -15,6 +15,8 @@ is open, it will close.
 The distance is computed either using PITT or using Baxter's infrared sensors, located on the grippers.
 In PITT mode, the release will be autonomous as soon as the object will return at its initial position.
 
+Documentation is available inside the src folder.
+
 ## How to use pbd2 ?
 
 In pbd2.cpp change DISTANCE_MEASURMENT_MODE
