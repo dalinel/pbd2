@@ -1,0 +1,383 @@
+\hypertarget{pbd2_8cpp}{}\section{pbd2.\+cpp File Reference}
+\label{pbd2_8cpp}\index{pbd2.\+cpp@{pbd2.\+cpp}}
+
+
+Software Arc. Assignment Baxter PbD.  
+
+
+{\ttfamily \#include \char`\"{}ros/ros.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}std\+\_\+msgs/\+String.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}pitt\+\_\+msgs/\+Tracked\+Shapes.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}pitt\+\_\+msgs/\+Tracked\+Shape.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}baxter\+\_\+core\+\_\+msgs/\+Endpoint\+State.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}geometry\+\_\+msgs/\+Pose.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$baxter\+\_\+core\+\_\+msgs/\+End\+Effector\+Command.\+h$>$}\newline
+{\ttfamily \#include $<$baxter\+\_\+core\+\_\+msgs/\+End\+Effector\+State.\+h$>$}\newline
+{\ttfamily \#include $<$baxter\+\_\+core\+\_\+msgs/\+Digital\+I\+O\+State.\+h$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Range.\+h$>$}\newline
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_a7b64bd792aa8629740a32027d7c384db}\label{pbd2_8cpp_a7b64bd792aa8629740a32027d7c384db}} 
+\#define \hyperlink{pbd2_8cpp_a7b64bd792aa8629740a32027d7c384db}{P\+I\+T\+T\+\_\+\+M\+E\+A\+S\+U\+R\+M\+E\+N\+T\+\_\+\+T\+O\+\_\+\+R\+E\+C\+E\+I\+VE}~2
+\begin{DoxyCompactList}\small\item\em We receive P\+I\+T\+T\+\_\+\+M\+E\+A\+S\+U\+R\+M\+E\+N\+T\+\_\+\+T\+O\+\_\+\+R\+E\+C\+E\+I\+VE messages from P\+I\+TT before unsubscribing to the topic. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a96e4cb941bea5dc15dabc0cd7f8de30d}\label{pbd2_8cpp_a96e4cb941bea5dc15dabc0cd7f8de30d}} 
+\#define \hyperlink{pbd2_8cpp_a96e4cb941bea5dc15dabc0cd7f8de30d}{D\+I\+S\+T\+A\+N\+C\+E\+\_\+\+M\+E\+A\+S\+U\+R\+M\+E\+N\+T\+\_\+\+M\+O\+DE}~2
+\begin{DoxyCompactList}\small\item\em Choose 1 to use P\+I\+TT and 2 to use iR sensors. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_ad0643d19475a120600078d83374ed7fd}\label{pbd2_8cpp_ad0643d19475a120600078d83374ed7fd}} 
+\#define \hyperlink{pbd2_8cpp_ad0643d19475a120600078d83374ed7fd}{T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+O\+P\+E\+N\+\_\+\+P\+I\+TT}~0.\+13
+\begin{DoxyCompactList}\small\item\em Threshold in meters, if a gripper-\/object distance goes under this threshold, the gripper will open (only if the gripper was previously closed and not holding an object). The distance is computed using P\+I\+TT. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_addd7e2590cde161ae385acb693eeff42}\label{pbd2_8cpp_addd7e2590cde161ae385acb693eeff42}} 
+\#define \hyperlink{pbd2_8cpp_addd7e2590cde161ae385acb693eeff42}{T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+C\+L\+O\+S\+E\+\_\+\+P\+I\+TT}~0.\+10
+\begin{DoxyCompactList}\small\item\em Threshold in meters, if a gripper-\/object distance goes under this threshold, the gripper will close (only if the gripper was previously open ). The distance is computed using P\+I\+TT. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a7ad788846ef178856c1f9c78d37fa19a}\label{pbd2_8cpp_a7ad788846ef178856c1f9c78d37fa19a}} 
+\#define {\bfseries T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+O\+P\+E\+N\+\_\+iR}~0.\+25
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_ae5539b95e2d2d5f387b260ea59b60cd0}\label{pbd2_8cpp_ae5539b95e2d2d5f387b260ea59b60cd0}} 
+\#define {\bfseries T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+C\+L\+O\+S\+E\+\_\+iR}~0.\+20
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+float \hyperlink{pbd2_8cpp_a243217ce04ca4f666832f799ffb87f66}{compute\+\_\+distance\+\_\+to\+\_\+an\+\_\+object} (pitt\+\_\+msgs\+::\+Tracked\+Shape tracked\+\_\+shape, geometry\+\_\+msgs\+::\+Pose gripper\+\_\+pose)
+\begin{DoxyCompactList}\small\item\em Compute the distance between the gripper and one object. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_a583292a4ffbf10d00f88fbe8bed5343b}{compute\+\_\+min\+\_\+distance\+\_\+to\+\_\+objects} (int $\ast$objects, float $\ast$distances, pitt\+\_\+msgs\+::\+Tracked\+Shapes \hyperlink{pbd2_8cpp_acbe839b9af428bae3b8dc62ca8b5ff1b}{tracked\+\_\+shapes}, geometry\+\_\+msgs\+::\+Pose left\+\_\+gripper\+\_\+pose, geometry\+\_\+msgs\+::\+Pose right\+\_\+gripper\+\_\+pose)
+\begin{DoxyCompactList}\small\item\em Find the closest object to the gripper and compute the gripper-\/nearest object distance. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_a42d903d23815d1c8c357a5498e314275}{vector\+\_\+difference} (float a\mbox{[}3\mbox{]}, float b\mbox{[}3\mbox{]}, float $\ast$difference)
+\begin{DoxyCompactList}\small\item\em Compute the difference of two vectors. \end{DoxyCompactList}\item 
+float \hyperlink{pbd2_8cpp_a372a9eb5fd19641764e27a3044e5d1de}{vector\+\_\+square} (float a\mbox{[}3\mbox{]})
+\begin{DoxyCompactList}\small\item\em Compute the square norm 2 of a vector. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_ab2c2cf659e1d5e51ac06b36a7aa71a2a}{endpoint\+\_\+state\+\_\+left} (const baxter\+\_\+core\+\_\+msgs\+::\+Endpoint\+State\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback attached to the /robot/limb/left/endpoint\+\_\+state topic, recover the left end effector pose. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_abc50d422cdb88ebc3ab975ac2bea47a9}{endpoint\+\_\+state\+\_\+right} (const baxter\+\_\+core\+\_\+msgs\+::\+Endpoint\+State\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback attached to the /robot/limb/right/endpoint\+\_\+state topic, recover the right end effector pose. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_ab7b86e8d80e1ce4b02adf7fddcb9600d}{ir\+Sensor\+\_\+left} (const sensor\+\_\+msgs\+::\+Range\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback attached to the /robot/range/left\+\_\+hand\+\_\+range/state topic, recover the ir sensor range measurment from the left end effector. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_a2ee500f02d5c30b3a07f8394b75bd796}{ir\+Sensor\+\_\+right} (const sensor\+\_\+msgs\+::\+Range\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback attached to the /robot/range/right\+\_\+hand\+\_\+range/state topic, recover the ir sensor range measurment from the right end effector. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_a0c20dd43f6b893eb63d2b836bcee4f0a}{tracked\+\_\+shape\+\_\+callback} (const pitt\+\_\+msgs\+::\+Tracked\+Shapes\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback attached to the /ransac\+\_\+segmentation/tracked\+Shapes topic, recover shape and position of the objects detected by P\+I\+TT. The associated subscriber will unsubscribe after P\+I\+T\+T\+\_\+\+M\+E\+A\+S\+U\+R\+M\+E\+N\+T\+\_\+\+T\+O\+\_\+\+R\+E\+C\+E\+I\+VE received measurment. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_a90cf0ee54c922f75b83028eedd561071}{left\+\_\+gripper\+\_\+open} (const baxter\+\_\+core\+\_\+msgs\+::\+End\+Effector\+State\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback attached to the /robot/end\+\_\+effector/left\+\_\+gripper/state topic, recover the open or closed state of the left gripper. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_a8d0a1605f154e689a136015b78d1d796}{right\+\_\+gripper\+\_\+open} (const baxter\+\_\+core\+\_\+msgs\+::\+End\+Effector\+State\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback attached to the /robot/end\+\_\+effector/right\+\_\+gripper/state topic, recover the open or closed state of the right gripper. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_aa5a1103d0188c0d946ef05f1db0ee70e}{open\+\_\+left\+\_\+call} (const baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Open left gripper when we push the circle button. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_af8b11811237e1ea48e3f21cb9c9607e3}{close\+\_\+left\+\_\+call} (const baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Close left gripper when we push the circle button. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_a6af042d277fe246e4609544452b19951}{open\+\_\+right\+\_\+call} (const baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Open right gripper when we push the circle button. \end{DoxyCompactList}\item 
+void \hyperlink{pbd2_8cpp_a0410db65372cde91d21e6879747a7e5b}{close\+\_\+right\+\_\+call} (const baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Open right gripper when we push the circle button. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{pbd2_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{pbd2_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em main, publish to robot/end\+\_\+effector/left\+\_\+gripper/command and robot/end\+\_\+effector/right\+\_\+gripper/command to open or close the grippers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_acbe839b9af428bae3b8dc62ca8b5ff1b}\label{pbd2_8cpp_acbe839b9af428bae3b8dc62ca8b5ff1b}} 
+pitt\+\_\+msgs\+::\+Tracked\+Shapes \hyperlink{pbd2_8cpp_acbe839b9af428bae3b8dc62ca8b5ff1b}{tracked\+\_\+shapes}
+\begin{DoxyCompactList}\small\item\em Global variable used to recover pitt msgs in the tracked\+\_\+shape\+\_\+callback. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a8ab99d984e6356d31b104b0ac13328f5}\label{pbd2_8cpp_a8ab99d984e6356d31b104b0ac13328f5}} 
+pitt\+\_\+msgs\+::\+Tracked\+Shapes {\bfseries empty}
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_a99650cb2a7fce20609545ad3fcae422d}\label{pbd2_8cpp_a99650cb2a7fce20609545ad3fcae422d}} 
+geometry\+\_\+msgs\+::\+Pose {\bfseries pose\+\_\+right}
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_a920400fee371e9e77808868b6876302a}\label{pbd2_8cpp_a920400fee371e9e77808868b6876302a}} 
+geometry\+\_\+msgs\+::\+Pose \hyperlink{pbd2_8cpp_a920400fee371e9e77808868b6876302a}{pose\+\_\+left}
+\begin{DoxyCompactList}\small\item\em Global variable used to recover left end effector pose in the endpoint\+\_\+state\+\_\+left callback. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_ac6863fc6c75a071f60d25165fc3e9ef1}\label{pbd2_8cpp_ac6863fc6c75a071f60d25165fc3e9ef1}} 
+int {\bfseries number\+\_\+of\+\_\+detected\+\_\+objects} =0
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_ab097cb59833a3cf3ebcd4de3699cbbf7}\label{pbd2_8cpp_ab097cb59833a3cf3ebcd4de3699cbbf7}} 
+int {\bfseries pitt\+\_\+msgs\+\_\+counter} = 0
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_af6a781b7a98a2f5b5b9b89c97bd42b60}\label{pbd2_8cpp_af6a781b7a98a2f5b5b9b89c97bd42b60}} 
+bool \hyperlink{pbd2_8cpp_af6a781b7a98a2f5b5b9b89c97bd42b60}{pitt\+\_\+measurement\+\_\+done} = false
+\begin{DoxyCompactList}\small\item\em pitt\+\_\+measurement\+\_\+done will be set to true when P\+I\+T\+T\+\_\+\+M\+E\+A\+S\+U\+R\+M\+E\+N\+T\+\_\+\+T\+O\+\_\+\+R\+E\+C\+E\+I\+VE have been received \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a79022ae2ecb59b4e970506713886033d}\label{pbd2_8cpp_a79022ae2ecb59b4e970506713886033d}} 
+float \hyperlink{pbd2_8cpp_a79022ae2ecb59b4e970506713886033d}{left\+\_\+range} = 10000
+\begin{DoxyCompactList}\small\item\em Global variable used to recover left i\+Rsensor range in the ir\+Sensor\+\_\+left callback. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a9e413661039a043b0cd94c3b841de38f}\label{pbd2_8cpp_a9e413661039a043b0cd94c3b841de38f}} 
+float {\bfseries right\+\_\+range} = 10000
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_ac41862c2ba6935f6d3ba1055af9a171e}\label{pbd2_8cpp_ac41862c2ba6935f6d3ba1055af9a171e}} 
+bool \hyperlink{pbd2_8cpp_ac41862c2ba6935f6d3ba1055af9a171e}{left\+\_\+hand\+\_\+open} = false
+\begin{DoxyCompactList}\small\item\em Global variable used to recover left gripper open or close state in the left\+\_\+gripper\+\_\+open callback. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a44313caeedba4dd99704901a85f58d48}\label{pbd2_8cpp_a44313caeedba4dd99704901a85f58d48}} 
+bool \hyperlink{pbd2_8cpp_a44313caeedba4dd99704901a85f58d48}{left\+\_\+hand\+\_\+gripping} = false
+\begin{DoxyCompactList}\small\item\em Global variable used to recover if the left gripper holds someting in the left\+\_\+gripper\+\_\+open callback. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a3847a08031e02c3df6a0b55bb61ccac4}\label{pbd2_8cpp_a3847a08031e02c3df6a0b55bb61ccac4}} 
+bool {\bfseries right\+\_\+hand\+\_\+open} = false
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_a731aea0d33c633bf78af2d5afcd3de4a}\label{pbd2_8cpp_a731aea0d33c633bf78af2d5afcd3de4a}} 
+bool {\bfseries right\+\_\+hand\+\_\+gripping} = false
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_a6744aecb44ecafeab255e06f3de4e552}\label{pbd2_8cpp_a6744aecb44ecafeab255e06f3de4e552}} 
+ros\+::\+Subscriber \hyperlink{pbd2_8cpp_a6744aecb44ecafeab255e06f3de4e552}{sub\+\_\+pitt}
+\begin{DoxyCompactList}\small\item\em Global subscriber, will subscribe to /ransac\+\_\+segmentation/tracked\+Shapes and unsubscribe in the tracked\+\_\+shape\+\_\+callback. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pbd2_8cpp_a9290c049a3b217d46f914138f47bbed1}\label{pbd2_8cpp_a9290c049a3b217d46f914138f47bbed1}} 
+ros\+::\+Publisher {\bfseries pub\+\_\+left\+\_\+gripper}
+\item 
+\mbox{\Hypertarget{pbd2_8cpp_ae5074566c160898f0497c2566a7a7fc5}\label{pbd2_8cpp_ae5074566c160898f0497c2566a7a7fc5}} 
+ros\+::\+Publisher {\bfseries pub\+\_\+right\+\_\+gripper}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Software Arc. Assignment Baxter PbD. 
+
+\begin{DoxyAuthor}{Author}
+Eloise, Zsolt, Natalia 
+\end{DoxyAuthor}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{pbd2_8cpp_af8b11811237e1ea48e3f21cb9c9607e3}\label{pbd2_8cpp_af8b11811237e1ea48e3f21cb9c9607e3}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!close\+\_\+left\+\_\+call@{close\+\_\+left\+\_\+call}}
+\index{close\+\_\+left\+\_\+call@{close\+\_\+left\+\_\+call}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{close\+\_\+left\+\_\+call()}{close\_left\_call()}}
+{\footnotesize\ttfamily void close\+\_\+left\+\_\+call (\begin{DoxyParamCaption}\item[{const baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Close left gripper when we push the circle button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr\& msg \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a0410db65372cde91d21e6879747a7e5b}\label{pbd2_8cpp_a0410db65372cde91d21e6879747a7e5b}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!close\+\_\+right\+\_\+call@{close\+\_\+right\+\_\+call}}
+\index{close\+\_\+right\+\_\+call@{close\+\_\+right\+\_\+call}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{close\+\_\+right\+\_\+call()}{close\_right\_call()}}
+{\footnotesize\ttfamily void close\+\_\+right\+\_\+call (\begin{DoxyParamCaption}\item[{const baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Open right gripper when we push the circle button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr\& msg \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a243217ce04ca4f666832f799ffb87f66}\label{pbd2_8cpp_a243217ce04ca4f666832f799ffb87f66}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!compute\+\_\+distance\+\_\+to\+\_\+an\+\_\+object@{compute\+\_\+distance\+\_\+to\+\_\+an\+\_\+object}}
+\index{compute\+\_\+distance\+\_\+to\+\_\+an\+\_\+object@{compute\+\_\+distance\+\_\+to\+\_\+an\+\_\+object}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{compute\+\_\+distance\+\_\+to\+\_\+an\+\_\+object()}{compute\_distance\_to\_an\_object()}}
+{\footnotesize\ttfamily float compute\+\_\+distance\+\_\+to\+\_\+an\+\_\+object (\begin{DoxyParamCaption}\item[{pitt\+\_\+msgs\+::\+Tracked\+Shape}]{tracked\+\_\+shape,  }\item[{geometry\+\_\+msgs\+::\+Pose}]{gripper\+\_\+pose }\end{DoxyParamCaption})}
+
+
+
+Compute the distance between the gripper and one object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tracked\+\_\+shape} & \+: an object coming from pitt \\
+\hline
+{\em gripper\+\_\+pose} & \+: the position of a gripper \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+distance 
+\end{DoxyReturn}
+\mbox{\Hypertarget{pbd2_8cpp_a583292a4ffbf10d00f88fbe8bed5343b}\label{pbd2_8cpp_a583292a4ffbf10d00f88fbe8bed5343b}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!compute\+\_\+min\+\_\+distance\+\_\+to\+\_\+objects@{compute\+\_\+min\+\_\+distance\+\_\+to\+\_\+objects}}
+\index{compute\+\_\+min\+\_\+distance\+\_\+to\+\_\+objects@{compute\+\_\+min\+\_\+distance\+\_\+to\+\_\+objects}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{compute\+\_\+min\+\_\+distance\+\_\+to\+\_\+objects()}{compute\_min\_distance\_to\_objects()}}
+{\footnotesize\ttfamily void compute\+\_\+min\+\_\+distance\+\_\+to\+\_\+objects (\begin{DoxyParamCaption}\item[{int $\ast$}]{objects,  }\item[{float $\ast$}]{distances,  }\item[{pitt\+\_\+msgs\+::\+Tracked\+Shapes}]{tracked\+\_\+shapes,  }\item[{geometry\+\_\+msgs\+::\+Pose}]{left\+\_\+gripper\+\_\+pose,  }\item[{geometry\+\_\+msgs\+::\+Pose}]{right\+\_\+gripper\+\_\+pose }\end{DoxyParamCaption})}
+
+
+
+Find the closest object to the gripper and compute the gripper-\/nearest object distance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em objects} & \+: objects\mbox{[}0\mbox{]} store the index of the left gripper\textquotesingle{}s nearest object. objects\mbox{[}1\mbox{]} for right gripper nearest object. \\
+\hline
+{\em distances} & \+: distances\mbox{[}0\mbox{]} store the distance of the left gripper with its nearest object. distances\mbox{[}1\mbox{]} for the right gripper \\
+\hline
+{\em tracked\+\_\+shapes} & \+: recovered from pitt, contains all the detected objects \\
+\hline
+{\em left\+\_\+gripper\+\_\+pose} & \\
+\hline
+{\em right\+\_\+gripper\+\_\+pose} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_ab2c2cf659e1d5e51ac06b36a7aa71a2a}\label{pbd2_8cpp_ab2c2cf659e1d5e51ac06b36a7aa71a2a}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!endpoint\+\_\+state\+\_\+left@{endpoint\+\_\+state\+\_\+left}}
+\index{endpoint\+\_\+state\+\_\+left@{endpoint\+\_\+state\+\_\+left}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{endpoint\+\_\+state\+\_\+left()}{endpoint\_state\_left()}}
+{\footnotesize\ttfamily void endpoint\+\_\+state\+\_\+left (\begin{DoxyParamCaption}\item[{const baxter\+\_\+core\+\_\+msgs\+::\+Endpoint\+State\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback attached to the /robot/limb/left/endpoint\+\_\+state topic, recover the left end effector pose. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \+: baxter\+\_\+core\+\_\+msgs\+::\+Endpoint\+State containing the pose of the end effector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_abc50d422cdb88ebc3ab975ac2bea47a9}\label{pbd2_8cpp_abc50d422cdb88ebc3ab975ac2bea47a9}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!endpoint\+\_\+state\+\_\+right@{endpoint\+\_\+state\+\_\+right}}
+\index{endpoint\+\_\+state\+\_\+right@{endpoint\+\_\+state\+\_\+right}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{endpoint\+\_\+state\+\_\+right()}{endpoint\_state\_right()}}
+{\footnotesize\ttfamily void endpoint\+\_\+state\+\_\+right (\begin{DoxyParamCaption}\item[{const baxter\+\_\+core\+\_\+msgs\+::\+Endpoint\+State\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback attached to the /robot/limb/right/endpoint\+\_\+state topic, recover the right end effector pose. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \+: baxter\+\_\+core\+\_\+msgs\+::\+Endpoint\+State containing the pose of the end effector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_ab7b86e8d80e1ce4b02adf7fddcb9600d}\label{pbd2_8cpp_ab7b86e8d80e1ce4b02adf7fddcb9600d}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!ir\+Sensor\+\_\+left@{ir\+Sensor\+\_\+left}}
+\index{ir\+Sensor\+\_\+left@{ir\+Sensor\+\_\+left}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{ir\+Sensor\+\_\+left()}{irSensor\_left()}}
+{\footnotesize\ttfamily void ir\+Sensor\+\_\+left (\begin{DoxyParamCaption}\item[{const sensor\+\_\+msgs\+::\+Range\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback attached to the /robot/range/left\+\_\+hand\+\_\+range/state topic, recover the ir sensor range measurment from the left end effector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \+: sensor\+\_\+msgs\+::\+Range\+::\+Const\+Ptr\& containing the ir sensor range measurment \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a2ee500f02d5c30b3a07f8394b75bd796}\label{pbd2_8cpp_a2ee500f02d5c30b3a07f8394b75bd796}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!ir\+Sensor\+\_\+right@{ir\+Sensor\+\_\+right}}
+\index{ir\+Sensor\+\_\+right@{ir\+Sensor\+\_\+right}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{ir\+Sensor\+\_\+right()}{irSensor\_right()}}
+{\footnotesize\ttfamily void ir\+Sensor\+\_\+right (\begin{DoxyParamCaption}\item[{const sensor\+\_\+msgs\+::\+Range\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback attached to the /robot/range/right\+\_\+hand\+\_\+range/state topic, recover the ir sensor range measurment from the right end effector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \+: sensor\+\_\+msgs\+::\+Range\+::\+Const\+Ptr\& containing the ir sensor range measurment \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a90cf0ee54c922f75b83028eedd561071}\label{pbd2_8cpp_a90cf0ee54c922f75b83028eedd561071}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!left\+\_\+gripper\+\_\+open@{left\+\_\+gripper\+\_\+open}}
+\index{left\+\_\+gripper\+\_\+open@{left\+\_\+gripper\+\_\+open}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{left\+\_\+gripper\+\_\+open()}{left\_gripper\_open()}}
+{\footnotesize\ttfamily void left\+\_\+gripper\+\_\+open (\begin{DoxyParamCaption}\item[{const baxter\+\_\+core\+\_\+msgs\+::\+End\+Effector\+State\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback attached to the /robot/end\+\_\+effector/left\+\_\+gripper/state topic, recover the open or closed state of the left gripper. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \+: baxter\+\_\+core\+\_\+msgs\+::\+End\+Effector\+State\+::\+Const\+Ptr\& contains the position of the gripper (100 for opened and 0 for closed) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_aa5a1103d0188c0d946ef05f1db0ee70e}\label{pbd2_8cpp_aa5a1103d0188c0d946ef05f1db0ee70e}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!open\+\_\+left\+\_\+call@{open\+\_\+left\+\_\+call}}
+\index{open\+\_\+left\+\_\+call@{open\+\_\+left\+\_\+call}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{open\+\_\+left\+\_\+call()}{open\_left\_call()}}
+{\footnotesize\ttfamily void open\+\_\+left\+\_\+call (\begin{DoxyParamCaption}\item[{const baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Open left gripper when we push the circle button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr\& msg \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a6af042d277fe246e4609544452b19951}\label{pbd2_8cpp_a6af042d277fe246e4609544452b19951}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!open\+\_\+right\+\_\+call@{open\+\_\+right\+\_\+call}}
+\index{open\+\_\+right\+\_\+call@{open\+\_\+right\+\_\+call}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{open\+\_\+right\+\_\+call()}{open\_right\_call()}}
+{\footnotesize\ttfamily void open\+\_\+right\+\_\+call (\begin{DoxyParamCaption}\item[{const baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Open right gripper when we push the circle button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & baxter\+\_\+core\+\_\+msgs\+::\+Digital\+I\+O\+State\+::\+Const\+Ptr\& msg \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a8d0a1605f154e689a136015b78d1d796}\label{pbd2_8cpp_a8d0a1605f154e689a136015b78d1d796}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!right\+\_\+gripper\+\_\+open@{right\+\_\+gripper\+\_\+open}}
+\index{right\+\_\+gripper\+\_\+open@{right\+\_\+gripper\+\_\+open}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{right\+\_\+gripper\+\_\+open()}{right\_gripper\_open()}}
+{\footnotesize\ttfamily void right\+\_\+gripper\+\_\+open (\begin{DoxyParamCaption}\item[{const baxter\+\_\+core\+\_\+msgs\+::\+End\+Effector\+State\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback attached to the /robot/end\+\_\+effector/right\+\_\+gripper/state topic, recover the open or closed state of the right gripper. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \+: baxter\+\_\+core\+\_\+msgs\+::\+End\+Effector\+State\+::\+Const\+Ptr\& contains the position of the gripper (100 for opened and 0 for closed) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a0c20dd43f6b893eb63d2b836bcee4f0a}\label{pbd2_8cpp_a0c20dd43f6b893eb63d2b836bcee4f0a}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!tracked\+\_\+shape\+\_\+callback@{tracked\+\_\+shape\+\_\+callback}}
+\index{tracked\+\_\+shape\+\_\+callback@{tracked\+\_\+shape\+\_\+callback}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{tracked\+\_\+shape\+\_\+callback()}{tracked\_shape\_callback()}}
+{\footnotesize\ttfamily void tracked\+\_\+shape\+\_\+callback (\begin{DoxyParamCaption}\item[{const pitt\+\_\+msgs\+::\+Tracked\+Shapes\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback attached to the /ransac\+\_\+segmentation/tracked\+Shapes topic, recover shape and position of the objects detected by P\+I\+TT. The associated subscriber will unsubscribe after P\+I\+T\+T\+\_\+\+M\+E\+A\+S\+U\+R\+M\+E\+N\+T\+\_\+\+T\+O\+\_\+\+R\+E\+C\+E\+I\+VE received measurment. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \+: pitt\+\_\+msgs\+::\+Tracked\+Shapes\+::\+Const\+Ptr\& recovered P\+I\+TT message \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a42d903d23815d1c8c357a5498e314275}\label{pbd2_8cpp_a42d903d23815d1c8c357a5498e314275}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!vector\+\_\+difference@{vector\+\_\+difference}}
+\index{vector\+\_\+difference@{vector\+\_\+difference}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{vector\+\_\+difference()}{vector\_difference()}}
+{\footnotesize\ttfamily void vector\+\_\+difference (\begin{DoxyParamCaption}\item[{float}]{a\mbox{[}3\mbox{]},  }\item[{float}]{b\mbox{[}3\mbox{]},  }\item[{float $\ast$}]{difference }\end{DoxyParamCaption})}
+
+
+
+Compute the difference of two vectors. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a\mbox{[}3\mbox{]}} & \+: first vector input \\
+\hline
+{\em b\mbox{[}3\mbox{]}} & \+: second vector input \\
+\hline
+{\em difference} & \+: the output difference \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{pbd2_8cpp_a372a9eb5fd19641764e27a3044e5d1de}\label{pbd2_8cpp_a372a9eb5fd19641764e27a3044e5d1de}} 
+\index{pbd2.\+cpp@{pbd2.\+cpp}!vector\+\_\+square@{vector\+\_\+square}}
+\index{vector\+\_\+square@{vector\+\_\+square}!pbd2.\+cpp@{pbd2.\+cpp}}
+\subsubsection{\texorpdfstring{vector\+\_\+square()}{vector\_square()}}
+{\footnotesize\ttfamily float vector\+\_\+square (\begin{DoxyParamCaption}\item[{float}]{a\mbox{[}3\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Compute the square norm 2 of a vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a\mbox{[}3\mbox{]}} & \+: vector input \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+square \+: the square norm 2 
+\end{DoxyReturn}
