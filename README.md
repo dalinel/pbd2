@@ -1,12 +1,12 @@
-#Pbd2 ros package
+# Pbd2 ros package
 
-##What is pbd2 ?
+## What is pbd2 ?
 
 Pbd2 is a ros package designed to be used with Baxter's programming by demonstration. In a pickup and release object task,
 it allows Baxter to autonomously open and close its gripper.
 This package has been tested with ros indigo and kinetic.
 
-##How pbd2 works ?
+## How pbd2 works ?
 
 pbd2 computes the distance between its grippers and the objects on the table. If the distance goes under a threshold and if the
 gripper is closed and not holding an object, it will open. If the distance goes under another smaller threshold and if the gripper
